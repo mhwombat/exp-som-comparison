@@ -1,0 +1,37 @@
+To produce plot from paper, use R:
+
+require(ggplot2)
+d <- read.csv('results.csv')
+d$classifier <- ordered(d$classifier, 
+  levels=c("SOM, 100 models","SCS, 99 models","SOM, 1024 models","SCS, 941 models"))
+ggplot(d, aes(x=d$numeral, y=d$accuracy, fill=d$classifier)) +
+  labs(x="numeral", y="accuracy") +
+  geom_bar(position="dodge", stat="identity", width=0.6) +
+  theme_bw() +
+  scale_fill_manual(values=c("#cfa271", "#8a9f51", "#956533", "#334632")) +
+  theme(legend.justification=c(1,1), legend.position=c(0.95,1)) +
+  guides(fill=guide_legend(title=NULL))
+ggsave(file='accuracy.pdf', width=8, height=7);
+
+
+To calculate wasted models, count the number of lines in the answer key.
+
+small SOM models used:
+$ grep '([^,]*,[^,]*)' somSmall.log | wc -l
+100
+So none of the 100 models were wasted
+
+small SCS models used:
+$ grep '([^,]*,[^,]*)' scsSmall.log | wc -l
+99
+So none of the 99 models were wasted
+
+large SOM models used:
+$ grep '([^,]*,[^,]*)' somBig.log | wc -l
+849
+So 175 out of the 1024 models were wasted, or 17%
+
+large SCS models used:
+$ grep '([^,]*,[^,]*)' scsBig.log | wc -l
+941
+So none of the 941 models were wasted
