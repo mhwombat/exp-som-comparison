@@ -21,7 +21,7 @@ import Data.List (maximumBy, group, sort, groupBy, sortBy)
 import Data.List.Split (chunksOf)
 import GHC.Arr (elems, listArray, readSTArray, thawSTArray, writeSTArray)
 import Image
-import Math.Geometry.Grid.Square
+-- import Math.Geometry.Grid.Square
 import System.Directory
 import System.FilePath.Posix (takeFileName)
 
@@ -43,13 +43,17 @@ shuffle xs = do
 readDirAndShuffle :: FilePath -> IO [FilePath]
 readDirAndShuffle d = do
   let g = mkStdGen 263167 -- seed
-  files <- map (d ++) . drop 2 <$> getDirectoryContents d
+  files <- map (\f -> d ++ '/':f) . filter isImageFileName <$> getDirectoryContents d
   return $ evalRand (shuffle files) g
 
 readImages :: FilePath -> IO [(FilePath, Image)]
 readImages dir = do
   files <- readDirAndShuffle dir
   mapM readOneImage files
+
+isImageFileName :: String -> Bool
+isImageFileName s =
+  s `notElem` [ "archive", ".", ".." ]
 
 readOneImage :: FilePath -> IO (FilePath, Image)
 readOneImage f = do
@@ -76,11 +80,11 @@ putImageRow xs = mapM_ (putHtml . imageToHtml) xs >> putHtmlLn ""
 imageToHtml :: Image -> String
 imageToHtml x = "<img src='data:image/png;base64," ++ base64encode x ++ "'/>"
 
-trainingDir :: String
-trainingDir = "/home/eamybut/mnist/trainingData/"
+-- trainingDir :: String
+-- trainingDir = "/home/amy/mnist/trainingData/"
 
-testDir :: String
-testDir = "/home/eamybut/mnist/testData/"
+-- testDir :: String
+-- testDir = "/home/amy/mnist/testData/"
 
 type Numeral = Char
 
@@ -123,37 +127,38 @@ safeLookup k vs = case lookup k vs of
                     Just v  -> v
                     Nothing -> 'X'
 
-sosLearningFunction :: Int -> Double
-sosLearningFunction t = r0 * ((rf/r0)**a)
+sgmLearningFunction :: Double -> Double -> Int -> Double
+sgmLearningFunction r0 rf t = r0 * ((rf/r0)**a)
   where a = fromIntegral t / tf
 
-somLearningFunction :: Int -> Double -> Double
-somLearningFunction = decayingGaussian r0 rf w0 wf tf . fromIntegral
+somLearningFunction :: Double -> Double -> Double -> Double -> Int -> Double -> Double
+somLearningFunction r0 rf w0 wf = decayingGaussian r0 rf w0 wf tf . fromIntegral
 
-r0 :: Double
-r0 = 1
+-- r0 :: Double
+-- r0 = 1
 
-rf :: Double
-rf = 0.001
+-- rf :: Double
+-- -- rf = 0.001
+-- rf = 0.001
 
-w0 :: Double
-w0 = 3
+-- w0 :: Double
+-- w0 = 3
 
-wf :: Double
-wf = 0.1
+-- wf :: Double
+-- -- wf = 0.1
+-- wf = 1e-15
 
 tf :: Double
-tf = 10000
+tf = 60000
 
-somGrid :: RectSquareGrid
--- somGrid = rectSquareGrid 10 10
-somGrid = rectSquareGrid 32 32
+-- somGrid :: RectSquareGrid
+-- -- somGrid = rectSquareGrid 10 10
+-- somGrid = rectSquareGrid 32 32
 
-sosSize :: Int
--- sosSize = 99
-sosSize = 941
+maxSGMSize :: Int
+maxSGMSize = 1024
 
-threshold :: Double
--- threshold = 0.16
-threshold = 0.12
+-- threshold :: Double
+-- -- threshold = 0.16
+-- threshold = 0.12
 

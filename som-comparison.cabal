@@ -12,8 +12,8 @@ build-type:          Simple
 extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
 
-executable exp-som-comparison-quick-sos
-  main-is:             SOSQuickMain.hs
+executable exp-som-comparison-sgm
+  main-is:             SGMMain.hs
   hs-source-dirs:      src
   default-language:    Haskell2010
   GHC-Options:      -Wall -fno-warn-orphans
@@ -31,51 +31,7 @@ executable exp-som-comparison-quick-sos
                        split ==0.2.*,
                        utf8-string ==1.*,
                        vector ==0.10.*,
-                       som ==8.2.*,
-                       containers ==0.5.*
-
-executable exp-som-comparison-quick-som
-  main-is:             SOMQuickMain.hs
-  hs-source-dirs:      src
-  default-language:    Haskell2010
-  GHC-Options:      -Wall -fno-warn-orphans
-  build-depends:       array ==0.5.*,
-                       base >=4.8 && <4.9,
-                       base64-bytestring ==1.0.*,
-                       bytestring ==0.10.*,
-                       grid ==7.8.*,
-                       mtl ==2.2.*,
-                       exceptions ==0.8.*,
-                       filepath ==1.4.*,
-                       directory ==1.2.*,
-                       MonadRandom ==0.4.*,
-                       JuicyPixels ==3.2.*,
-                       split ==0.2.*,
-                       utf8-string ==1.*,
-                       vector ==0.10.*,
-                       som ==8.2.*,
-                       containers ==0.5.*
-
-executable exp-som-comparison-sos
-  main-is:             SOSMain.hs
-  hs-source-dirs:      src
-  default-language:    Haskell2010
-  GHC-Options:      -Wall -fno-warn-orphans
-  build-depends:       array ==0.5.*,
-                       base >=4.8 && <4.9,
-                       base64-bytestring ==1.0.*,
-                       bytestring ==0.10.*,
-                       mtl ==2.2.*,
-                       exceptions ==0.8.*,
-                       filepath ==1.4.*,
-                       grid ==7.8.*,
-                       directory ==1.2.*,
-                       MonadRandom ==0.4.*,
-                       JuicyPixels ==3.2.*,
-                       split ==0.2.*,
-                       utf8-string ==1.*,
-                       vector ==0.10.*,
-                       som ==8.2.*,
+                       som ==9.0.*,
                        containers ==0.5.*
 
 executable exp-som-comparison-som
@@ -97,5 +53,5 @@ executable exp-som-comparison-som
                        split ==0.2.*,
                        utf8-string ==1.*,
                        vector ==0.10.*,
-                       som ==8.2.*,
+                       som ==9.0.*,
                        containers ==0.5.*

@@ -1,37 +1,35 @@
-To produce plot from paper, use R:
+To produce results.csv:
+
+echo "numeral,classifier,accuracy" > results.csv
+grep '(".*",[0-9]*,[0-9]*,0.[0-9]*)' resultsForPaper/*.log | sed 's@resultsForPaper/@@; s@sgm-0.10-0.1-0.0001.log@"SGM, 1024 models"@; s@sgm-0.165-0.1-0.0001.log@"SGM, 96 models"@; s@som-10-0.1-0.0001-2-0.0001.log@"SOM, 100 models"@; s@som-32-0.1-0.0001-2-0.0001.log@"SOM, 1024 models"@; s@\(.*\):.\(".*"\),\(.*\),\(.*\),\(.*\).@\2,\1,\5@' >> results.csv
+
+To produce plot from results.csv, use R:
 
 require(ggplot2)
 d <- read.csv('results.csv')
 d$classifier <- ordered(d$classifier, 
-  levels=c("SOM, 100 models","SCS, 99 models","SOM, 1024 models","SCS, 941 models"))
+  levels=c("SOM, 100 models","SGM, 96 models","SOM, 1024 models","SGM, 1024 models"))
 ggplot(d, aes(x=d$numeral, y=d$accuracy, fill=d$classifier)) +
   labs(x="numeral", y="accuracy") +
   geom_bar(position="dodge", stat="identity", width=0.6) +
   theme_bw() +
   scale_fill_manual(values=c("#cfa271", "#8a9f51", "#956533", "#334632")) +
-  theme(legend.justification=c(1,1), legend.position=c(0.95,1)) +
+  theme(legend.justification=c(1,1), legend.position=c(0.95,1.06)) +
   guides(fill=guide_legend(title=NULL))
 ggsave(file='accuracy.pdf', width=8, height=7);
 
 
-To calculate wasted models, count the number of lines in the answer key.
+echo "classifier,time,accuracy" > early.csv
+grep '"all"' *just*.log | sed 's/\(...\).*just\(.*\).log.*,\(.*\))/\1,\2,\3/; s/sgm/SGM/; s/som/SOM/' >> early.csv
 
-small SOM models used:
-$ grep '([^,]*,[^,]*)' somSmall.log | wc -l
-100
-So none of the 100 models were wasted
-
-small SCS models used:
-$ grep '([^,]*,[^,]*)' scsSmall.log | wc -l
-99
-So none of the 99 models were wasted
-
-large SOM models used:
-$ grep '([^,]*,[^,]*)' somBig.log | wc -l
-849
-So 175 out of the 1024 models were wasted, or 17%
-
-large SCS models used:
-$ grep '([^,]*,[^,]*)' scsBig.log | wc -l
-941
-So none of the 941 models were wasted
+require(ggplot2)
+d <- read.csv('early.csv')
+ggplot(d, aes(x=time, y=accuracy, shape=classifier)) +
+  labs(x="number of training images", y="accuracy") +
+  geom_line() +
+  geom_point(size=4) +
+  coord_cartesian(ylim = c(0, 1)) +
+  theme_bw() +
+  theme(legend.justification=c(1,1), legend.position=c(0.95,0.4)) +
+  guides(fill=guide_legend(title=NULL))
+ggsave(file='early.pdf', width=4, height=4);
