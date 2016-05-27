@@ -156,7 +156,7 @@ tf = 60000
 -- somGrid = rectSquareGrid 32 32
 
 maxSGMSize :: Int
-maxSGMSize = 1024
+maxSGMSize = 2000
 
 -- threshold :: Double
 -- -- threshold = 0.16

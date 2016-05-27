@@ -41,6 +41,7 @@ trainOne (c, modelCreationData, stats) (f, p) = do
   let modelCreationData' = case lookup bmu modelCreationData of
                              Just _  -> modelCreationData
                              Nothing -> (bmu, numeral):modelCreationData
+  -- putImageGrid 10 (models c')
   return (c', modelCreationData', (bmu, numeral):stats)
 
 testOne :: [(Label, Numeral)] -> ClassifierType -> [(Numeral, Bool)] -> (FilePath, Image) -> IO [(Numeral, Bool)]

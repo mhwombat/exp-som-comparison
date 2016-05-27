@@ -28,21 +28,22 @@ testClassifier threshold r0 rf = makeSGM (sgmLearningFunction r0 rf) maxSGMSize 
 
 trainOne :: (ClassifierType, [(Label,Numeral)], [(Label, Numeral)]) -> (FilePath, Image) -> IO (ClassifierType, [(Label, Numeral)], [(Label, Numeral)])
 trainOne (c, modelCreationData, stats) (f, p) = do
-  let (bmu, _, _, c') = trainAndClassify c p
+  let (bmu, bmuDiff, _, c') = trainAndClassify c p
   let numeral = head f
-  putStrLn $ f ++ "," ++ numeral : "," ++ show bmu
+  putStrLn $ f ++ "," ++ numeral : "," ++ show bmu ++ "," ++ show bmuDiff
   let modelCreationData' = case lookup bmu modelCreationData of
                              Just _  -> modelCreationData
                              Nothing -> (bmu, numeral):modelCreationData
+  -- putImageGrid 10 (M.elems . modelMap $ c')
   return (c', modelCreationData', (bmu, numeral):stats)
 
 testOne :: [(Label, Numeral)] -> ClassifierType -> [(Numeral, Bool)] -> (FilePath, Image) -> IO [(Numeral, Bool)]
 testOne key c stats (f, p) = do
-  let (bmu, _, _)  = classify c p
+  let (bmu, bmuDiff, _)  = classify c p
   let numeral = head f
   let answer = safeLookup bmu key
   let correct = answer == numeral
-  putStrLn $ f ++ "," ++ numeral : "," ++ show bmu ++ "," ++ show answer ++ "," ++ show correct
+  putStrLn $ f ++ "," ++ numeral : "," ++ show bmu ++ "," ++ show bmuDiff ++ "," ++ show answer ++ "," ++ show correct
   return $ (numeral, correct):stats
 
 main :: IO ()
@@ -59,7 +60,7 @@ main = do
   putStrLn "Training"
   putStrLn "====="
   trainingImages <- readImages trainingDir
-  putStrLn "filename,numeral,label"
+  putStrLn "filename,numeral,label,diff"
   (trainedClassifier, modelCreationData, stats) <- foldM trainOne (testClassifier threshold r0 rf, [], []) trainingImages
   let answers = makeAnswerKey stats
   putStrLn ""
@@ -80,7 +81,7 @@ main = do
   putStrLn "====="
   putStrLn "Testing"
   putStrLn "====="
-  putStrLn "filename,numeral,label,answer,correct"
+  putStrLn "filename,numeral,label,diff,answer,correct"
   stats2 <- foldM (testOne answers trainedClassifier') [] testImages
   putStrLn ""
   putStrLn "====="
