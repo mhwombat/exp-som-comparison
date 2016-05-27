@@ -30,7 +30,7 @@ executable exp-som-comparison-sgm
                        JuicyPixels ==3.2.*,
                        split ==0.2.*,
                        utf8-string ==1.*,
-                       vector ==0.10.*,
+                       vector ==0.11.*,
                        som ==9.0.*,
                        containers ==0.5.*
 
@@ -52,6 +52,6 @@ executable exp-som-comparison-som
                        JuicyPixels ==3.2.*,
                        split ==0.2.*,
                        utf8-string ==1.*,
-                       vector ==0.10.*,
+                       vector ==0.11.*,
                        som ==9.0.*,
                        containers ==0.5.*
